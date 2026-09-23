@@ -35,6 +35,10 @@ venv.bak/
 .coverage
 htmlcov/
 
+# Local artifacts
+out/
+dist/
+
 # IDEs
 .idea/
 .vscode/

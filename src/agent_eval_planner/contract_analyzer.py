@@ -22,6 +22,10 @@ NAME_RE = re.compile(
     r"(?:agent(?:[_\s]name)?|specialist|target[_ ]?agent)\s*[:=]\s*[\"']?([A-Za-z0-9_\-./]+)[\"']?",
     re.IGNORECASE,
 )
+AGENT_NAME_KEY_RE = re.compile(
+    r"(?:agent_name|target_agent)\s*[:=]\s*[\"']?([A-Za-z0-9_\-./]+)[\"']?",
+    re.IGNORECASE,
+)
 SCOPE_RE = re.compile(r"escopo(?:\s+declarado)?\s*[:=]\s*(.+)$", re.IGNORECASE | re.MULTILINE)
 HEADING_RE = re.compile(r"^#+\s*(.+)$", re.MULTILINE)
 
@@ -157,6 +161,9 @@ class ContractAnalyzer:
             )
             if name:
                 return str(name)
+        key_match = AGENT_NAME_KEY_RE.search(self.raw)
+        if key_match:
+            return key_match.group(1)
         match = NAME_RE.search(self.raw)
         return match.group(1) if match else None
 
