@@ -200,3 +200,4 @@ class OpenAPIParser:
                 merged.append(built)
 
         return merged
+
