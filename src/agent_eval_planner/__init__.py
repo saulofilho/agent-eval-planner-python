@@ -1,15 +1,50 @@
-# src/agent_eval_planner/__init__.py
-"""Agent Eval Planner package.
+"""agent_eval_planner package.
 
-Provides a CLI (`agent-eval-planner`) that reads a specification file (YAML or JSON)
-and generates a Markdown evaluation plan for AI agents.
-
-The implementation is intentionally lightweight – it focuses on parsing the spec
-and rendering a basic Markdown template. Users can extend the logic in
-`generator.py` for custom metrics, test scenarios, or CI integrations.
+Turns an agent contract into a guardrail evaluation plan, JSONL suite, and remediations.
 """
 
-from .generator import generate_plan
+from __future__ import annotations
 
-__all__ = ["generate_plan"]
+from .errors import Error, InputError, ValidationError
+from .models import PlannerResult, Vector
+from .planner import Planner
+from .suite_validator import SuiteValidator
+from .version import __version__
 
+
+def generate(input_path: str | None = None, raw: str | None = None, **options) -> PlannerResult:
+    """Generate plan, suite, and remediations from an agent contract."""
+    return Planner(input_path=input_path, raw=raw, **options).call()
+
+
+def generate_plan(input_path: str | None = None, raw: str | None = None, **options) -> str:
+    """Generate only the Markdown evaluation plan."""
+    return generate(input_path=input_path, raw=raw, **options).plan
+
+
+def validate_suite(
+    path: str,
+    known_tools: list[str] | None = None,
+    agent_has_no_tools: bool = False,
+) -> list[str]:
+    """Validate a suite.jsonl file. Returns a list of errors (empty if OK)."""
+    return SuiteValidator(
+        path=path,
+        known_tools=known_tools or [],
+        agent_has_no_tools=agent_has_no_tools,
+    ).validate()
+
+
+__all__ = [
+    "__version__",
+    "generate",
+    "generate_plan",
+    "validate_suite",
+    "Planner",
+    "PlannerResult",
+    "Vector",
+    "SuiteValidator",
+    "Error",
+    "InputError",
+    "ValidationError",
+]

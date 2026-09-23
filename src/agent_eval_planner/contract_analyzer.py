@@ -19,7 +19,7 @@ TOOL_LINE_RE = re.compile(
 )
 TOOLS_INLINE_RE = re.compile(r"tools?\s*[:=]\s*\[([^\]]+)\]", re.IGNORECASE)
 NAME_RE = re.compile(
-    r"(?:agent(?:\s+name)?|specialist|target[_ ]?agent)\s*[:=]\s*[\"']?([A-Za-z0-9_\-./]+)[\"']?",
+    r"(?:agent(?:[_\s]name)?|specialist|target[_ ]?agent)\s*[:=]\s*[\"']?([A-Za-z0-9_\-./]+)[\"']?",
     re.IGNORECASE,
 )
 SCOPE_RE = re.compile(r"escopo(?:\s+declarado)?\s*[:=]\s*(.+)$", re.IGNORECASE | re.MULTILINE)

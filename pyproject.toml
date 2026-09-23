@@ -5,11 +5,13 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "agent-eval-planner"
 version = "0.1.0"
-description = "Generate evaluation plans for AI agents from specification files"
+description = "Generate guardrail evaluation plans, JSONL suites, and remediations from agent contracts"
 readme = "README.md"
-license = {text = "MIT"}
+license = { text = "MIT" }
 requires-python = ">=3.10"
-authors = [{name = "Saulo Filho", email = "saulofilho@users.noreply.github.com"}]
+authors = [
+    { name = "Saulo Filho", email = "saulofilho@users.noreply.github.com" }
+]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
@@ -17,9 +19,12 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
     "Topic :: Software Development :: Testing",
 ]
-dependencies = []
+dependencies = [
+    "pyyaml>=6.0",
+]
 
 [project.urls]
 Homepage = "https://saulofilho.github.io/agent-eval-planner-python/"
@@ -28,6 +33,5 @@ Repository = "https://github.com/saulofilho/agent-eval-planner-python"
 [project.scripts]
 agent-eval-planner = "agent_eval_planner.cli:main"
 
-[tool.setuptools]
-package-dir = {"" = "src"}
-packages = ["agent_eval_planner"]
+[tool.setuptools.packages.find]
+where = ["src"]

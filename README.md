@@ -6,21 +6,26 @@
 
 **Site:** [saulofilho.github.io/agent-eval-planner-python](https://saulofilho.github.io/agent-eval-planner-python/)
 
-Generates **evaluation plans for AI agents** based on specification files. It helps AI‑engineers design systematic test suites, define metrics, and produce reproducible evaluation reports.
+Python library that turns an **agent contract** (system prompt, tools, policy gates) into a guardrail evaluation pipeline:
+
+1. **Action plan** — SCOPE / INJECT / ROLE / PII / TOOL / HALLUC / EXFIL vectors
+2. **suite.jsonl** — executable cases with `forbidden_tools` filled
+3. **Remediations** — prompt / gate / evaluator quick wins
+
+Sibling of [`security-pentest-planner`](https://github.com/saulofilho/security-pentest-planner-python), applied to LLM agents. Port of the Ruby gem [`agent_eval_planner`](https://github.com/saulofilho/agent-eval-planner).
+
+Canonical smoke test: **carrot cake** (off-topic). If the agent answers with a recipe, its scope is not limited.
 
 ## What it does
 
-- Parses specification files (YAML/JSON) describing agent capabilities, goals, and constraints.
-- Generates a structured evaluation plan in Markdown with:
-  - Test scenarios and success criteria
-  - Metric definitions and aggregation methods
-  - Suggested data collection procedures
-- Supports custom extensions for tool‑specific assessments (LLM, reinforcement‑learning, tool‑use, etc.).
+- Parses agent contracts (Markdown, text, JSON, YAML).
+- Generates a Markdown eval plan, a JSONL suite, and remediations.
+- Validates suites (hard-fail on empty `forbidden_tools` / leftover placeholders).
 
 ## What it does **NOT** do
 
-- Execute the evaluation (the generated plan is for manual or CI execution).
-- Provide benchmark data or ground‑truth datasets.
+- Execute the evaluation against a live agent.
+- Replace pentest of APIs/infra (use `security-pentest-planner`).
 
 ## Installation
 
@@ -39,30 +44,44 @@ poetry add agent-eval-planner
 ## CLI usage
 
 ```bash
-# Generate plan from a spec file
-agent-eval-planner spec.yaml -o evaluation-plan.md
+# Full pipeline → directory (plan + suite + remediations)
+agent-eval-planner agent.md --tools funnel_analytics,open_service_center_ticket \
+  -t "Platform Team" -a analytics -o ./out
+
+# Validate suite (hard-fail on empty forbidden_tools / placeholders)
+agent-eval-planner validate ./out/suite.jsonl \
+  --known-tools funnel_analytics,open_service_center_ticket
+
+# Plan only to stdout
+agent-eval-planner agent.md --plan-only --agent analytics
 ```
 
 ### Options
 
 | Flag | Description |
 |------|-------------|
-| `-o, --output FILE` | Write the generated plan to a file |
+| `-t, --team TEAM` | Team name in the document title |
+| `-a, --agent NAME` | `target_agent` name |
+| `--tools LIST` | Comma-separated real tool names |
+| `--scope TEXT` | Declared scope summary |
+| `--harness NAME` | `generic` or `marketing-copilot` |
+| `-o, --output PATH` | Output directory or single file |
+| `--plan-only` / `--suite-only` / `--remediations-only` | Emit a single artifact |
 | `-v, --version` | Show version |
-| `-h, --help` | Show help |
 
 ## Programmatic usage
 
 ```python
 import agent_eval_planner
 
-plan = agent_eval_planner.generate(
-    spec_path="spec.yaml",
-    include_metrics=True,
+result = agent_eval_planner.generate(
+    input_path="agent.md",
+    team="Platform Team",
+    tools=["funnel_analytics", "open_service_center_ticket"],
 )
 
 with open("evaluation-plan.md", "w", encoding="utf-8") as f:
-    f.write(plan)
+    f.write(result.plan)
 ```
 
 ## Publish to PyPI
@@ -79,21 +98,20 @@ python -m twine upload dist/*
 git clone https://github.com/saulofilho/agent-eval-planner-python.git
 cd agent-eval-planner-python
 
-# Run unit tests
+python -m pip install .
 python -m unittest discover -s tests -v
 ```
 
 ## Recommended workflow
 
 ```
-Spec file  →  agent-eval-planner  →  Evaluation Plan (Markdown)
+Agent contract  →  agent-eval-planner  →  Plan + suite.jsonl + remediations
                                                      ↓
-                                            Manual execution / CI
+                                            Harness / CI execution
                                                      ↓
-                                            Results + analysis
+                                            Failures + remediations
 ```
 
 ## License
 
 MIT — see [LICENSE](LICENSE).
-
