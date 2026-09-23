@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agent Eval Planner | Python</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="noise" aria-hidden="true"></div>
+  <div class="glow glow--left" aria-hidden="true"></div>
+  <div class="glow glow--right" aria-hidden="true"></div>
+
+  <!-- Header -->
+  <header class="header">
+    <nav class="nav container">
+      <a href="#" class="logo">
+        <span class="logo__icon" aria-hidden="true">🤖</span>
+        <span class="logo__text">agent-eval-planner</span>
+        <span class="logo__badge">Python 3.10+</span>
+      </a>
+      <button class="nav__toggle" aria-label="Toggle navigation menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav__links">
+        <li><a href="#about">About</a></li>
+        <li><a href="#demo">Demo</a></li>
+        <li><a href="#install" class="nav__cta">Install</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Hero -->
+    <section class="hero container">
+      <div class="hero__content reveal">
+        <div class="badge-pill"><span>🧪</span> Evaluation Planner for AI Agents</div>
+        <h1>Generate <span class="gradient-text">evaluation plans</span> from specifications</h1>
+        <p class="hero__lead">Define test scenarios, metrics, and reproducible reports for your AI agents – all in a clean Markdown document.</p>
+        <div class="hero__actions">
+          <a href="#install" class="btn btn--primary"><span>⚡</span> Install via pip</a>
+          <a href="https://github.com/saulofilho/agent-eval-planner-python" class="btn btn--ghost" target="_blank" rel="noopener">GitHub</a>
+          <a href="https://pypi.org/project/agent-eval-planner/" class="btn btn--ghost" target="_blank" rel="noopener">PyPI</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- About -->
+    <section id="about" class="section container">
+      <div class="section__header reveal">
+        <p class="eyebrow">Engineered for AI Engineers</p>
+        <h2>Why agent-eval-planner?</h2>
+        <p class="section__subtitle">Create systematic evaluation plans, capture metrics, and keep results reproducible across model iterations.</p>
+      </div>
+    </section>
+
+    <!-- Install -->
+    <section id="install" class="section container">
+      <div class="install reveal">
+        <div class="install__text">
+          <p class="eyebrow">Get Started</p>
+          <h2>Install and generate your first plan</h2>
+          <p>Available on PyPI. Compatible with Python 3.10+.</p>
+        </div>
+        <div class="install__commands">
+          <div class="command-block">
+            <div class="command-block__header"><span>Standard pip</span><button class="copy-btn" data-copy="pip install agent-eval-planner">Copy</button></div>
+            <code>pip install agent-eval-planner</code>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer__inner">
+      <p><strong>agent-eval-planner</strong> · MIT License</p>
+      <p>Created by <a href="https://github.com/saulofilho" target="_blank" rel="noopener">Saulo Filho</a></p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
+

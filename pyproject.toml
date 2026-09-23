@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "agent-eval-planner"
+version = "0.1.0"
+description = "Generate evaluation plans for AI agents from specification files"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.10"
+authors = [{name = "Saulo Filho", email = "saulofilho@users.noreply.github.com"}]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Software Development :: Testing",
+]
+dependencies = []
+
+[project.urls]
+Homepage = "https://saulofilho.github.io/agent-eval-planner-python/"
+Repository = "https://github.com/saulofilho/agent-eval-planner-python"
+
+[project.scripts]
+agent-eval-planner = "agent_eval_planner.cli:main"
+
