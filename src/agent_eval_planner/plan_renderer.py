@@ -88,21 +88,20 @@ class PlanRenderer:
         )
 
     def _harness_note(self) -> str:
-        if self.analyzer.harness != "rd-copilot":
+        if self.analyzer.harness != "native":
             return ""
         return (
-            "**Schema da suite:** nativo rd-copilot "
+            "**Schema da suite:** nativo "
             "(`target_component`, `turns` com `sequence` desde 0, `suite=regression`, "
-            "`metadata.vector_id`). O candidato vai para `evals/<produto>/datasets/.local/`. "
-            "`golden` só entra com curadoria.\n\n"
+            "`metadata.vector_id`). `golden` só entra com curadoria.\n\n"
             "**Camada:** marque `prompt`, `gate` ou `ambos` depois de ler o routing do produto. "
-            "Sem gate estreito no specialist (bolo de cenoura no `default`), a camada é `prompt`.\n\n"
+            "Sem gate estreito no specialist, a camada é `prompt`.\n\n"
             "**O avaliador não pontua:** teto de chamadas, substring proibida na resposta "
             "e pedido misto além do par `refusal` / `expected_tools`.\n\n"
         )
 
     def _vector_harness_lines(self, vector: Vector) -> str:
-        if self.analyzer.harness != "rd-copilot":
+        if self.analyzer.harness != "native":
             return ""
         return (
             f"- **IDs:** `{vector.id}` no plano e `metadata.vector_id` na suíte\n"

@@ -1,11 +1,11 @@
 """Hard-fail validator for suite JSONL.
 
-Accepts the legacy marketing-copilot row (`input` / `expected`) and the
-rd-copilot canonical row (`target_component` / `turns` / `suite`).
+Accepts the legacy row (`input` / `expected`) and the
+native row (`target_component` / `turns` / `suite`).
 
 Hard-fail rules:
 - Remaining {{PLACEHOLDER}} tokens anywhere in the file
-- Duplicate ids, or ids the rd-copilot EvalCase regex would reject
+- Duplicate ids, or ids the stable-id regex would reject
 - A refusal turn, or a turn tagged as a guardrail, whose forbidden_tools
   name none of the tools that target can call
 - Native guardrail metadata on the row when no turn forbids such a tool
@@ -132,7 +132,7 @@ def _row_id_errors(
     if not ID_RE.fullmatch(row_id_str):
         errors.append(
             f"line {line_no}: id {row_id!r} must match "
-            "[A-Za-z0-9][A-Za-z0-9._:-]* (EvalCase stable id)"
+            "[A-Za-z0-9][A-Za-z0-9._:-]* (stable id)"
         )
     if row_id_str in seen_ids:
         errors.append(f"line {line_no}: duplicate id {row_id!r}")
@@ -495,7 +495,7 @@ def _mixed_schema_error(seen_schemas: set[str]) -> list[str]:
     names = ", ".join(sorted(seen_schemas))
     return [
         "mixed suite schemas in one file: "
-        f"{names}. Split legacy marketing-copilot rows from rd-copilot rows."
+        f"{names}. Split legacy rows from native rows."
     ]
 
 

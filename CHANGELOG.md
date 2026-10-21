@@ -8,7 +8,7 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 ## [0.2.0] - 2026-10-21
 
 ### Adicionado
-- `--harness rd-copilot` emite a linha nativa (`target_component`, `turns`, `suite=regression`, `metadata.vector_id`) que o harness do rd-copilot carrega.
+- `--harness native` emite a linha nativa (`target_component`, `turns`, `suite=regression`, `metadata.vector_id`).
 - O validador aceita essa forma e a linha legada do marketing-copilot: `--bound-tools`, `--schema`, `--target-components`, e aviso quando `forbidden_tools` cita tool do catálogo que o alvo não chama.
 
 ## [0.1.0] - 2026-09-23

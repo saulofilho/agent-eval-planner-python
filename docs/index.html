@@ -50,7 +50,7 @@
         <p class="hero__lead">
           <strong>agent-eval-planner</strong> reads your agent contract — system prompt, tools, policy gates —
           and emits an attack plan, an executable <code>suite.jsonl</code>, and the remediations to close every hole.
-          <code>--harness rd-copilot</code> writes the native row the harness can load.
+          <code>--harness native</code> writes the native row the harness can load.
         </p>
         <div class="hero__actions">
           <a href="#install" class="btn btn--primary">pip install</a>
@@ -72,7 +72,7 @@
         </div>
         <div class="terminal__body">
 <pre><span class="t-prompt">$</span> agent-eval-planner agent.md <span class="t-flag">\</span>
-    <span class="t-flag">--harness</span> rd-copilot <span class="t-flag">-a</span> default <span class="t-flag">\</span>
+    <span class="t-flag">--harness</span> native <span class="t-flag">-a</span> analytics <span class="t-flag">\</span>
     <span class="t-flag">--tools</span> funnel_analytics <span class="t-flag">-o</span> ./out
 
 <span class="t-ok">Suite generated at</span> out/suite.jsonl
@@ -80,7 +80,7 @@
 
 <span class="t-prompt">$</span> agent-eval-planner validate ./out/suite.jsonl <span class="t-flag">\</span>
     <span class="t-flag">--schema</span> native <span class="t-flag">--bound-tools</span> funnel_analytics <span class="t-flag">\</span>
-    <span class="t-flag">--target-components</span> default
+    <span class="t-flag">--target-components</span> analytics
 
 <span class="t-hit">OK: ./out/suite.jsonl</span> <span class="cursor-blink"></span></pre>
         </div>
@@ -136,7 +136,7 @@
           <h3>Executable suite</h3>
           <p>
             JSONL cases your harness can run today. Legacy rows keep <code>target_agent</code>.
-            <code>--harness rd-copilot</code> emits <code>target_component</code>, <code>turns</code>,
+            <code>--harness native</code> emits <code>target_component</code>, <code>turns</code>,
             <code>suite=regression</code>, and <code>metadata.vector_id</code>.
           </p>
           <span class="card__file">suite.jsonl</span>
@@ -229,7 +229,7 @@
         <div class="demo-tabs" role="tablist">
           <button class="demo-tab active" data-tab="demo-plan" role="tab">Action plan</button>
           <button class="demo-tab" data-tab="demo-suite" role="tab">Legacy suite</button>
-          <button class="demo-tab" data-tab="demo-native" role="tab">rd-copilot</button>
+          <button class="demo-tab" data-tab="demo-native" role="tab">native</button>
           <button class="demo-tab" data-tab="demo-rem" role="tab">Remediations</button>
         </div>
 
@@ -281,10 +281,10 @@
 
         <div id="demo-native" class="demo-content">
           <div class="code-window">
-            <div class="code-window__header"><span>suite.jsonl</span><span>--harness rd-copilot</span></div>
+            <div class="code-window__header"><span>suite.jsonl</span><span>--harness native</span></div>
 <pre>{
   <span class="c-key">"id"</span>: <span class="c-val">"guardrail-scope-01-dd352377"</span>,
-  <span class="c-key">"target_component"</span>: <span class="c-val">"default"</span>,
+  <span class="c-key">"target_component"</span>: <span class="c-val">"analytics"</span>,
   <span class="c-key">"suite"</span>: <span class="c-val">"regression"</span>,
   <span class="c-key">"turns"</span>: [{
     <span class="c-key">"sequence"</span>: <span class="c-ok">0</span>,
@@ -331,7 +331,7 @@
         <p class="eyebrow">Drop it anywhere</p>
         <h2>CLI, library, or CI gate</h2>
         <p class="section__subtitle">
-          <code>--schema native</code> checks the rd-copilot row. A guardrail that forbids no tool the
+          <code>--schema native</code> checks the native row. A guardrail that forbids no tool the
           target can call is a hard fail. Naming a catalog tool the target never calls is a warning.
         </p>
       </div>
@@ -340,7 +340,7 @@
         <div class="code-switcher">
           <button class="code-switcher__btn active" data-snippet="snippet-cli">CLI</button>
           <button class="code-switcher__btn" data-snippet="snippet-py">Python</button>
-          <button class="code-switcher__btn" data-snippet="snippet-native">rd-copilot</button>
+          <button class="code-switcher__btn" data-snippet="snippet-native">native</button>
           <button class="code-switcher__btn" data-snippet="snippet-ci">GitHub Actions</button>
         </div>
 
@@ -368,9 +368,9 @@ agent-eval-planner validate ./out/suite.jsonl <span class="c-key">--known-tools<
 result = agent_eval_planner.<span class="c-ok">generate</span>(
     input_path=<span class="c-val">"agent.md"</span>,
     team=<span class="c-val">"Platform Team"</span>,
-    agent_name=<span class="c-val">"default"</span>,
+    agent_name=<span class="c-val">"analytics"</span>,
     tools=[<span class="c-val">"funnel_analytics"</span>],
-    harness=<span class="c-val">"rd-copilot"</span>,
+    harness=<span class="c-val">"native"</span>,
 )
 
 <span class="c-key">print</span>(result.plan)          <span class="c-dim"># markdown action plan</span>
@@ -381,7 +381,7 @@ errors = agent_eval_planner.<span class="c-ok">validate_suite</span>(
     <span class="c-val">"out/suite.jsonl"</span>,
     known_tools=[<span class="c-val">"funnel_analytics"</span>, <span class="c-val">"docs_search"</span>],
     bound_tools=[<span class="c-val">"funnel_analytics"</span>],
-    target_components=[<span class="c-val">"default"</span>],
+    target_components=[<span class="c-val">"analytics"</span>],
     schema=<span class="c-val">"native"</span>,
 )</pre>
           </div>
@@ -389,9 +389,9 @@ errors = agent_eval_planner.<span class="c-ok">validate_suite</span>(
 
         <div id="snippet-native" class="code-snippet">
           <div class="code-window">
-            <div class="code-window__header"><span>rd-copilot</span><button class="copy-btn" data-copy="agent-eval-planner agent.md --harness rd-copilot -a default --tools funnel_analytics -o ./out">Copy</button></div>
+            <div class="code-window__header"><span>native</span><button class="copy-btn" data-copy="agent-eval-planner agent.md --harness native -a analytics --tools funnel_analytics -o ./out">Copy</button></div>
 <pre><span class="c-dim"># Native row: target_component, turns, suite=regression, vector_id</span>
-agent-eval-planner agent.md <span class="c-key">--harness</span> rd-copilot <span class="c-key">-a</span> default \
+agent-eval-planner agent.md <span class="c-key">--harness</span> native <span class="c-key">-a</span> default \
   <span class="c-key">--tools</span> funnel_analytics <span class="c-key">-o</span> ./out
 
 <span class="c-dim"># Bound tools are the ones this target can call</span>
@@ -399,7 +399,7 @@ agent-eval-planner validate ./out/suite.jsonl \
   <span class="c-key">--schema</span> native \
   <span class="c-key">--bound-tools</span> funnel_analytics \
   <span class="c-key">--known-tools</span> funnel_analytics,docs_search \
-  <span class="c-key">--target-components</span> default,docs_support,orchestrator</pre>
+  <span class="c-key">--target-components</span> analytics</pre>
           </div>
         </div>
 

@@ -23,7 +23,7 @@ class SuiteRenderer:
         return "\n".join(lines) + "\n"
 
     def _row_for(self, vector: Vector) -> dict:
-        if self.analyzer.harness == "rd-copilot":
+        if self.analyzer.harness == "native":
             return self._native_row(vector)
         return self._legacy_row(vector)
 

@@ -1,4 +1,4 @@
-"""Gate tests aligned with ai-registry PR 142 (rd-copilot suite contract)."""
+"""Gate tests for the native suite contract."""
 
 import json
 import tempfile
@@ -63,7 +63,7 @@ def _native(**expectation_overrides: object) -> dict:
     expectations.update(expectation_overrides)
     return {
         "id": "guardrail-scope-01-c4a0b1e1",
-        "target_component": "default",
+        "target_component": "analytics",
         "suite": "regression",
         "turns": [
             {
@@ -118,7 +118,7 @@ class SuiteContractTest(unittest.TestCase):
             [_native()],
             known_tools=CATALOG,
             bound_tools=ANALYTICS,
-            target_components=["default", "docs_support", "orchestrator"],
+            target_components=["analytics", "support"],
             schema="native",
         )
         self.assertEqual(errors, [])
@@ -164,14 +164,14 @@ class SuiteContractTest(unittest.TestCase):
 
     def test_unknown_target_component_fails(self) -> None:
         row = _native()
-        row["target_component"] = "customer_support"
+        row["target_component"] = "billing"
         errors, _warnings = self._check(
             [row],
             known_tools=ANALYTICS,
-            target_components=["default", "docs_support", "orchestrator"],
+            target_components=["analytics", "support"],
             schema="native",
         )
-        self.assertTrue(any("customer_support" in error for error in errors))
+        self.assertTrue(any("billing" in error for error in errors))
 
     def test_missing_tool_flags_fail(self) -> None:
         errors, _warnings = self._check([_legacy()], known_tools=[])
@@ -185,23 +185,23 @@ class SuiteContractTest(unittest.TestCase):
         errors, _warnings = self._check([_legacy(), _native()], known_tools=ANALYTICS)
         self.assertTrue(any("mixed suite schemas" in error for error in errors))
 
-    def test_generated_rd_copilot_suite_validates(self) -> None:
+    def test_generated_native_suite_validates(self) -> None:
         tools = ["funnel_analytics", "open_service_center_ticket"]
         result = agent_eval_planner.generate(
             input_path=FIXTURE_PATH,
-            agent_name="default",
+            agent_name="analytics",
             tools=tools,
-            harness="rd-copilot",
+            harness="native",
         )
         rows = [json.loads(line) for line in result.suite.splitlines() if line.strip()]
         smoke = next(row for row in rows if row["metadata"]["vector_id"] == "SCOPE-01")
-        self.assertEqual(smoke["target_component"], "default")
+        self.assertEqual(smoke["target_component"], "analytics")
         self.assertEqual(smoke["suite"], "regression")
         self.assertEqual(smoke["turns"][0]["sequence"], 0)
         self.assertIn("funnel_analytics", smoke["turns"][0]["expectations"]["forbidden_tools"])
         self.assertNotIn("plan_id", smoke["metadata"])
         self.assertIn("metadata.vector_id", result.plan)
-        self.assertIn("prompt_secrecy", result.remediations)
+        self.assertIn("helper compartilhado", result.remediations)
 
         with tempfile.TemporaryDirectory() as tmp:
             path = str(Path(tmp) / "suite.jsonl")
@@ -210,7 +210,7 @@ class SuiteContractTest(unittest.TestCase):
                 path,
                 known_tools=tools,
                 bound_tools=tools,
-                target_components=["default"],
+                target_components=["analytics"],
                 schema="native",
             )
         self.assertEqual(errors, [])

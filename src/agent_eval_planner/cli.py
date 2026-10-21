@@ -35,7 +35,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--harness",
         default="generic",
-        help="Harness alvo (generic|marketing-copilot|rd-copilot)",
+        help="Harness alvo (generic|marketing-copilot|native)",
     )
     parser.add_argument("-o", "--output", help="Arquivo .md/.jsonl ou diretório de saída")
     parser.add_argument("--plan-only", action="store_true", help="Gerar apenas o plano")

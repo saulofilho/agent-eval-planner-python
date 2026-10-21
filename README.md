@@ -9,7 +9,7 @@
 Python library that turns an **agent contract** (system prompt, tools, policy gates) into a guardrail evaluation pipeline:
 
 1. **Action plan** — SCOPE / INJECT / ROLE / PII / TOOL / HALLUC / EXFIL vectors
-2. **suite.jsonl** — executable cases with `forbidden_tools` filled
+2. **suite.jsonl** — executable cases. `generic` and `marketing-copilot` keep the legacy row; `--harness native` emits the native envelope (`target_component`, `turns`, `suite=regression`, `metadata.vector_id`)
 3. **Remediations** — prompt / gate / evaluator quick wins
 
 Sibling of [`security-pentest-planner`](https://github.com/saulofilho/security-pentest-planner-python), applied to LLM agents. Port of the Ruby gem [`agent_eval_planner`](https://github.com/saulofilho/agent-eval-planner).
@@ -20,7 +20,7 @@ Canonical smoke test: **carrot cake** (off-topic). If the agent answers with a r
 
 - Parses agent contracts (Markdown, text, JSON, YAML).
 - Generates a Markdown eval plan, a JSONL suite, and remediations.
-- Validates suites (hard-fail on empty `forbidden_tools` / leftover placeholders).
+- Validates suites. A guardrail that forbids no tool the target can call is a hard fail. A catalog tool the target cannot call is a warning. Leftover `{{...}}` placeholders fail.
 
 ## What it does **NOT** do
 
@@ -52,13 +52,13 @@ agent-eval-planner agent.md --tools funnel_analytics,open_service_center_ticket 
 agent-eval-planner validate ./out/suite.jsonl \
   --known-tools funnel_analytics,open_service_center_ticket
 
-# rd-copilot native row (target_component, turns, suite=regression, metadata.vector_id)
-agent-eval-planner agent.md --harness rd-copilot -a default \
+# native row (target_component, turns, suite=regression, metadata.vector_id)
+agent-eval-planner agent.md --harness native -a analytics \
   --tools funnel_analytics,open_service_center_ticket -o ./out
 agent-eval-planner validate ./out/suite.jsonl --schema native \
   --bound-tools funnel_analytics \
   --known-tools funnel_analytics,open_service_center_ticket \
-  --target-components default,docs_support,orchestrator
+  --target-components analytics
 
 # Plan only to stdout
 agent-eval-planner agent.md --plan-only --agent analytics
@@ -69,13 +69,26 @@ agent-eval-planner agent.md --plan-only --agent analytics
 | Flag | Description |
 |------|-------------|
 | `-t, --team TEAM` | Team name in the document title |
-| `-a, --agent NAME` | `target_agent` name |
-| `--tools LIST` | Comma-separated real tool names |
+| `-a, --agent NAME` | `target_agent` (legacy) or `target_component` (`native`) |
+| `--tools LIST` | Comma-separated real tool names. On `native` these are the tools bound to the target |
 | `--scope TEXT` | Declared scope summary |
-| `--harness NAME` | `generic`, `marketing-copilot`, or `rd-copilot` |
+| `--harness NAME` | `generic`, `marketing-copilot`, or `native` |
 | `-o, --output PATH` | Output directory or single file |
 | `--plan-only` / `--suite-only` / `--remediations-only` | Emit a single artifact |
 | `-v, --version` | Show version |
+
+### `validate`
+
+| Flag | Description |
+|------|-------------|
+| `--known-tools LIST` | Product catalog. With only this flag, every name is treated as bound (legacy suites) |
+| `--bound-tools LIST` | Tools wired to this target. Must be a subset of `--known-tools` |
+| `--schema NAME` | `auto` (default), `legacy`, or `native`. A file that mixes the two shapes fails |
+| `--target-components LIST` | Allowed `target_component` or legacy `target_agent` values |
+| `--suites LIST` | Allowed native `suite` values. Default: `golden,regression,routing,calibration,production-sample` |
+| `--agent-has-no-tools` | Agent truly has no tools. Do not combine with tool flags |
+
+`suite: smoke` is invalid on a native row; smoke lives in `metadata.split`. `OK WITH WARNINGS` does not mean the suite is ready to hand off. Any `{{...}}` left in the file fails, including runtime slots such as `{{today_date}}`.
 
 ## Programmatic usage
 
@@ -85,11 +98,21 @@ import agent_eval_planner
 result = agent_eval_planner.generate(
     input_path="agent.md",
     team="Platform Team",
-    tools=["funnel_analytics", "open_service_center_ticket"],
+    agent_name="analytics",
+    tools=["funnel_analytics"],
+    harness="native",
 )
 
 with open("evaluation-plan.md", "w", encoding="utf-8") as f:
     f.write(result.plan)
+
+errors = agent_eval_planner.validate_suite(
+    "out/suite.jsonl",
+    known_tools=["funnel_analytics", "docs_search"],
+    bound_tools=["funnel_analytics"],
+    target_components=["analytics"],
+    schema="native",
+)
 ```
 
 ## Publish to PyPI
