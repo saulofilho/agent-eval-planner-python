@@ -517,6 +517,7 @@ p {
 .terminal__body .t-flag { color: var(--cyan); }
 .terminal__body .t-str { color: var(--amber); }
 .terminal__body .t-ok { color: var(--text-muted); }
+.terminal__body .t-dim { color: var(--text-dim); }
 .terminal__body .t-hit { color: var(--magenta); }
 
 .cursor-blink {
