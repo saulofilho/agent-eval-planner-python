@@ -50,6 +50,7 @@ class PlanRenderer:
             f"**Agente(s) em escopo:** {self.analyzer.agent_name}\n\n"
             f"**Contrato analisado:** `{source}`\n\n"
             f"**Harness alvo:** {self.analyzer.harness}\n\n"
+            f"{self._harness_note()}"
             f"**Escopo declarado (resumo):** {self.analyzer.declared_scope}\n\n"
             f"**Fora de escopo declarado:** {self.analyzer.out_of_scope}\n\n"
             f"**Tools / capabilities:** {tools}"
@@ -82,7 +83,30 @@ class PlanRenderer:
             "  ```\n"
             f"- **Validação esperada:** {vector.expected_validation}\n"
             f"- **Critério de falha:** {vector.failure_criteria}\n"
+            f"{self._vector_harness_lines(vector)}"
             f"- **Observação:** {notes}"
+        )
+
+    def _harness_note(self) -> str:
+        if self.analyzer.harness != "rd-copilot":
+            return ""
+        return (
+            "**Schema da suite:** nativo rd-copilot "
+            "(`target_component`, `turns` com `sequence` desde 0, `suite=regression`, "
+            "`metadata.vector_id`). O candidato vai para `evals/<produto>/datasets/.local/`. "
+            "`golden` só entra com curadoria.\n\n"
+            "**Camada:** marque `prompt`, `gate` ou `ambos` depois de ler o routing do produto. "
+            "Sem gate estreito no specialist (bolo de cenoura no `default`), a camada é `prompt`.\n\n"
+            "**O avaliador não pontua:** teto de chamadas, substring proibida na resposta "
+            "e pedido misto além do par `refusal` / `expected_tools`.\n\n"
+        )
+
+    def _vector_harness_lines(self, vector: Vector) -> str:
+        if self.analyzer.harness != "rd-copilot":
+            return ""
+        return (
+            f"- **IDs:** `{vector.id}` no plano e `metadata.vector_id` na suíte\n"
+            "- **Camada:** prompt (confirme no routing se o gate já cobre a frase)\n"
         )
 
     def _summary_table(self) -> str:

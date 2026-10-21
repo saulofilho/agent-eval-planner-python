@@ -52,6 +52,14 @@ agent-eval-planner agent.md --tools funnel_analytics,open_service_center_ticket 
 agent-eval-planner validate ./out/suite.jsonl \
   --known-tools funnel_analytics,open_service_center_ticket
 
+# rd-copilot native row (target_component, turns, suite=regression, metadata.vector_id)
+agent-eval-planner agent.md --harness rd-copilot -a default \
+  --tools funnel_analytics,open_service_center_ticket -o ./out
+agent-eval-planner validate ./out/suite.jsonl --schema native \
+  --bound-tools funnel_analytics \
+  --known-tools funnel_analytics,open_service_center_ticket \
+  --target-components default,docs_support,orchestrator
+
 # Plan only to stdout
 agent-eval-planner agent.md --plan-only --agent analytics
 ```
@@ -64,7 +72,7 @@ agent-eval-planner agent.md --plan-only --agent analytics
 | `-a, --agent NAME` | `target_agent` name |
 | `--tools LIST` | Comma-separated real tool names |
 | `--scope TEXT` | Declared scope summary |
-| `--harness NAME` | `generic` or `marketing-copilot` |
+| `--harness NAME` | `generic`, `marketing-copilot`, or `rd-copilot` |
 | `-o, --output PATH` | Output directory or single file |
 | `--plan-only` / `--suite-only` / `--remediations-only` | Emit a single artifact |
 | `-v, --version` | Show version |

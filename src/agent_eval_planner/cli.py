@@ -7,9 +7,10 @@ import sys
 from pathlib import Path
 from typing import Sequence
 
-from . import generate, validate_suite
+from . import generate
 from .errors import Error
 from .models import PlannerResult
+from .suite_validator import SuiteValidator
 from .version import __version__
 
 
@@ -34,7 +35,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--harness",
         default="generic",
-        help="Harness alvo (generic|marketing-copilot)",
+        help="Harness alvo (generic|marketing-copilot|rd-copilot)",
     )
     parser.add_argument("-o", "--output", help="Arquivo .md/.jsonl ou diretório de saída")
     parser.add_argument("--plan-only", action="store_true", help="Gerar apenas o plano")
@@ -60,14 +61,29 @@ def build_validate_parser() -> argparse.ArgumentParser:
         description="Valida uma suite JSONL (hard-fail em forbidden_tools vazios / placeholders).",
     )
     parser.add_argument("suite", nargs="?", help="Caminho da suite.jsonl")
+    parser.add_argument("--known-tools", help="Catálogo do produto (vírgula)")
     parser.add_argument(
-        "--known-tools",
-        help="Tools reais (vírgula)",
+        "--bound-tools",
+        help="Tools ligadas a este alvo (vírgula). Lidas do construtor.",
     )
     parser.add_argument(
         "--agent-has-no-tools",
         action="store_true",
         help="Agente sem tools",
+    )
+    parser.add_argument(
+        "--target-components",
+        help="target_component ou target_agent aceitos (vírgula)",
+    )
+    parser.add_argument(
+        "--suites",
+        help="Valores nativos de suite. Padrão: golden,regression,routing,calibration,production-sample",
+    )
+    parser.add_argument(
+        "--schema",
+        choices=("auto", "legacy", "native"),
+        default="auto",
+        help="Forma da linha. auto detecta e recusa mistura.",
     )
     return parser
 
@@ -183,28 +199,40 @@ def _run_validate(argv: list[str]) -> int:
         parser.print_help(sys.stderr)
         return 1
 
-    known_tools: list[str] = []
-    if args.known_tools:
-        known_tools = [part.strip() for part in args.known_tools.split(",") if part.strip()]
-
     try:
-        errors = validate_suite(
-            args.suite,
-            known_tools=known_tools,
+        validator = SuiteValidator(
+            path=args.suite,
+            known_tools=_csv(args.known_tools),
+            bound_tools=_csv(args.bound_tools),
             agent_has_no_tools=args.agent_has_no_tools,
+            target_components=_csv(args.target_components),
+            suites=_csv(args.suites),
+            schema=args.schema,
         )
+        errors = validator.validate()
     except Error as exc:
         print(f"Erro: {exc}", file=sys.stderr)
         return 1
 
+    for warning in validator.warnings:
+        print(warning, file=sys.stderr)
     if errors:
         print(f"INVALID: {args.suite} ({len(errors)} error(s))", file=sys.stderr)
         for error in errors:
             print(f"  - {error}", file=sys.stderr)
         return 1
 
+    if validator.warnings:
+        print(f"OK WITH WARNINGS: {args.suite} ({len(validator.warnings)} warning(s))")
+        return 0
     print(f"OK: {args.suite}")
     return 0
+
+
+def _csv(value: str | None) -> list[str]:
+    if not value:
+        return []
+    return [part.strip() for part in value.split(",") if part.strip()]
 
 
 if __name__ == "__main__":

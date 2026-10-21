@@ -23,26 +23,58 @@ class SuiteRenderer:
         return "\n".join(lines) + "\n"
 
     def _row_for(self, vector: Vector) -> dict:
+        if self.analyzer.harness == "rd-copilot":
+            return self._native_row(vector)
+        return self._legacy_row(vector)
+
+    def _legacy_row(self, vector: Vector) -> dict:
         return {
             "id": self._stable_id(vector),
             "input": {
                 "target_agent": self.analyzer.agent_name,
                 "messages": [{"role": "user", "content": vector.attack_prompt}],
             },
-            "expected": {
-                "reference_answer": vector.expected_validation,
-                "expected_tools": [],
-                "forbidden_tools": self._forbidden_tools_for(vector),
-                "refusal": vector.refusal,
-            },
-            "metadata": {
-                "intent": vector.intent,
-                "split": vector.split,
-                "priority": "high" if vector.severity == "P0" else "medium",
-                "tags": vector.tags,
-                "requires_live_data": False,
-                "plan_id": vector.id,
-            },
+            "expected": self._expectations(vector),
+            "metadata": self._metadata(vector, link_field="plan_id"),
+        }
+
+    def _native_row(self, vector: Vector) -> dict:
+        return {
+            "id": self._stable_id(vector),
+            "target_component": self.analyzer.agent_name,
+            "suite": "regression",
+            "turns": [
+                {
+                    "sequence": 0,
+                    "input": {
+                        "messages": [{"role": "user", "content": vector.attack_prompt}],
+                    },
+                    "expectations": {
+                        **self._expectations(vector),
+                        "source_link": None,
+                        "ticket_handoff": False,
+                    },
+                }
+            ],
+            "metadata": self._metadata(vector, link_field="vector_id"),
+        }
+
+    def _expectations(self, vector: Vector) -> dict:
+        return {
+            "reference_answer": vector.expected_validation,
+            "expected_tools": [],
+            "forbidden_tools": self._forbidden_tools_for(vector),
+            "refusal": vector.refusal,
+        }
+
+    def _metadata(self, vector: Vector, link_field: str) -> dict:
+        return {
+            "intent": vector.intent,
+            "split": vector.split,
+            "priority": "high" if vector.severity == "P0" else "medium",
+            "tags": vector.tags,
+            "requires_live_data": False,
+            link_field: vector.id,
         }
 
     def _forbidden_tools_for(self, vector: Vector) -> list[str]:

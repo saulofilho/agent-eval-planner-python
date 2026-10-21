@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "agent-eval-planner"
-version = "0.1.0"
+version = "0.2.0"
 description = "Generate guardrail evaluation plans, JSONL suites, and remediations from agent contracts"
 readme = "README.md"
 license = { text = "MIT" }

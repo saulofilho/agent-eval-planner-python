@@ -41,6 +41,17 @@ class RemediationRenderer:
             f"Plano gerado para **{self.analyzer.agent_name}** ({self.team}): "
             f"{len(self.vectors)} vetores,\n"
             f"dos quais {p0} P0. Snippets são referência — não PR pronto para merge."
+            f"{self._harness_summary()}"
+        )
+
+    def _harness_summary(self) -> str:
+        if self.analyzer.harness != "rd-copilot":
+            return ""
+        return (
+            "\n\nSuite nativa: `target_component` + `turns` + `suite=regression`, "
+            "ligada ao plano por `metadata.vector_id`. "
+            "Se o texto de EXFIL mora num helper compartilhado (`prompt_secrecy`), "
+            "marque o raio: o mesmo trecho vale para os copilots que o importam."
         )
 
     def _quick_wins(self) -> str:

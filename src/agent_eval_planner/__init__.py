@@ -26,12 +26,24 @@ def validate_suite(
     path: str,
     known_tools: list[str] | None = None,
     agent_has_no_tools: bool = False,
+    bound_tools: list[str] | None = None,
+    target_components: list[str] | None = None,
+    suites: list[str] | None = None,
+    schema: str = "auto",
 ) -> list[str]:
-    """Validate a suite.jsonl file. Returns a list of errors (empty if OK)."""
+    """Validate a suite.jsonl file. Returns errors (empty if OK).
+
+    Warnings are not returned. Construct ``SuiteValidator`` when the caller
+    needs ``OK WITH WARNINGS`` (catalog tools the target cannot call).
+    """
     return SuiteValidator(
         path=path,
         known_tools=known_tools or [],
+        bound_tools=bound_tools,
         agent_has_no_tools=agent_has_no_tools,
+        target_components=target_components,
+        suites=suites,
+        schema=schema,
     ).validate()
 
 
