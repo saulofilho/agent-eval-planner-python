@@ -7,7 +7,7 @@
   <meta name="description" content="Turn an agent contract into a guardrail evaluation pipeline: action plan, executable suite.jsonl, and remediations. Python 3.10+.">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="apple-touch-icon" href="favicon.svg">
-  <meta name="theme-color" content="#3db769">
+  <meta name="theme-color" content="#8c7396">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -39,7 +39,7 @@
 
   <main>
     <!-- Hero -->
-    <section class="hero band band--blue">
+    <section class="hero band band--purple">
       <div class="hero__type" aria-hidden="true">
         <span class="hero__line hero__line--1">Break</span>
         <span class="hero__line hero__line--2">your agent</span>
@@ -81,11 +81,11 @@
     </section>
 
     <!-- Stats / "now playing" -->
-    <section class="band band--pink stats-band">
+    <section class="band band--blush stats-band">
       <div class="dshapes" aria-hidden="true"><i></i><i></i><i></i></div>
       <div class="container stats-wrap">
         <div class="ticket reveal">
-          <p class="kicker kicker--pink">In every run</p>
+          <p class="kicker kicker--blush">In every run</p>
           <ul class="ticket__rows">
             <li><span class="ticket__num">13</span><span class="ticket__label">Attack vectors</span><a href="#vectors">See →</a></li>
             <li><span class="ticket__num">07</span><span class="ticket__label">Threat classes</span><a href="#vectors">See →</a></li>
@@ -95,13 +95,13 @@
         </div>
         <div class="join reveal">
           <h2 class="display">Ship it</h2>
-          <a href="#install" class="pill pill--mustard">Get installed →</a>
+          <a href="#install" class="pill pill--butter">Get installed →</a>
         </div>
       </div>
     </section>
 
     <!-- Pipeline -->
-    <section id="pipeline" class="band band--red section">
+    <section id="pipeline" class="band band--lilac section">
       <div class="container">
         <h2 class="mega reveal">Pipeline</h2>
         <p class="section__lead reveal">
@@ -110,19 +110,19 @@
         </p>
       </div>
       <div class="poster-row">
-        <article class="poster poster--blue tilt-l reveal">
+        <article class="poster poster--violet tilt-l reveal">
           <div class="poster__top"><span>AEP</span><span>Step 01</span></div>
           <h3 class="poster__title">Action plan</h3>
           <p>A reviewable Markdown document: every vector with objective, attack prompt, expected validation, and the exact failure criteria. Grouped by threat class and ordered by severity.</p>
           <span class="poster__foot">plano-de-acao-agent-eval.md</span>
         </article>
-        <article class="poster poster--pink tilt-r reveal">
+        <article class="poster poster--blush tilt-r reveal">
           <div class="poster__top"><span>AEP</span><span>Step 02</span></div>
           <h3 class="poster__title">Executable suite</h3>
           <p>JSONL cases your harness can run today. Legacy rows keep <code>target_agent</code>. <code>--harness native</code> emits <code>target_component</code>, <code>turns</code>, <code>suite=regression</code>, and <code>metadata.vector_id</code>.</p>
           <span class="poster__foot">suite.jsonl</span>
         </article>
-        <article class="poster poster--green tilt-l2 reveal">
+        <article class="poster poster--butter tilt-l2 reveal">
           <div class="poster__top"><span>AEP</span><span>Step 03</span></div>
           <h3 class="poster__title">Remediations</h3>
           <p>Quick wins ranked by priority, the layer to fix (prompt, policy gate, tool boundary, evaluator), a reference snippet, and the regression case that proves the fix.</p>
@@ -135,20 +135,20 @@
     <section id="vectors" class="band band--violet section">
       <div class="container">
         <p class="kicker kicker--light reveal">Threat model</p>
-        <h2 class="mega mega--light reveal">Seven ways<br><span class="outline outline--mustard">an agent breaks</span></h2>
+        <h2 class="mega mega--light reveal">Seven ways<br><span class="outline outline--butter">an agent breaks</span></h2>
         <p class="section__lead section__lead--light reveal">
           Vectors are selected from signals in your contract. Tool abuse cases only appear when the agent
           has tools; grounding cases only when it touches analytics. No filler.
         </p>
 
         <div class="vector-grid">
-          <article class="vector vector--mustard reveal"><span class="vector__id">SCOPE</span><h3>Out-of-scope containment</h3><p>Innocent off-topic asks, requests disguised in product jargon, cross-capability without handoff.</p></article>
-          <article class="vector vector--pink reveal"><span class="vector__id">INJECT</span><h3>Prompt injection</h3><p>Direct overrides and instructions smuggled inside pasted customer content.</p></article>
-          <article class="vector vector--green reveal"><span class="vector__id">ROLE</span><h3>Role escape</h3><p>Persona swaps to a generic assistant and developer or debug mode unlocks.</p></article>
-          <article class="vector vector--orange reveal"><span class="vector__id">PII</span><h3>Data leakage</h3><p>Cross-tenant probes and fabricated personal data presented as real.</p></article>
-          <article class="vector vector--blue reveal"><span class="vector__id">TOOL</span><h3>Tool abuse</h3><p>Domain tools fired on off-topic turns, and invented destructive tools.</p></article>
-          <article class="vector vector--red reveal"><span class="vector__id">HALLUC</span><h3>Grounding</h3><p>Metrics asserted with no tool call, and fabricated files or endpoints.</p></article>
-          <article class="vector vector--mustard reveal"><span class="vector__id">EXFIL</span><h3>Exfiltration</h3><p>System prompt dumps and internal tool inventory disclosure.</p></article>
+          <article class="vector vector--butter reveal"><span class="vector__id">SCOPE</span><h3>Out-of-scope containment</h3><p>Innocent off-topic asks, requests disguised in product jargon, cross-capability without handoff.</p></article>
+          <article class="vector vector--blush reveal"><span class="vector__id">INJECT</span><h3>Prompt injection</h3><p>Direct overrides and instructions smuggled inside pasted customer content.</p></article>
+          <article class="vector vector--sand reveal"><span class="vector__id">ROLE</span><h3>Role escape</h3><p>Persona swaps to a generic assistant and developer or debug mode unlocks.</p></article>
+          <article class="vector vector--rose reveal"><span class="vector__id">PII</span><h3>Data leakage</h3><p>Cross-tenant probes and fabricated personal data presented as real.</p></article>
+          <article class="vector vector--purple reveal"><span class="vector__id">TOOL</span><h3>Tool abuse</h3><p>Domain tools fired on off-topic turns, and invented destructive tools.</p></article>
+          <article class="vector vector--lavender reveal"><span class="vector__id">HALLUC</span><h3>Grounding</h3><p>Metrics asserted with no tool call, and fabricated files or endpoints.</p></article>
+          <article class="vector vector--butter reveal"><span class="vector__id">EXFIL</span><h3>Exfiltration</h3><p>System prompt dumps and internal tool inventory disclosure.</p></article>
         </div>
 
         <div class="feature reveal">
@@ -166,7 +166,7 @@
     </section>
 
     <!-- Output -->
-    <section id="output" class="band band--green section">
+    <section id="output" class="band band--sand section">
       <div class="container">
         <div class="split-head reveal">
           <div>
@@ -278,7 +278,7 @@
     </section>
 
     <!-- Usage -->
-    <section id="usage" class="band band--orange section">
+    <section id="usage" class="band band--rose section">
       <div class="container">
         <div class="split-head reveal">
           <div>
@@ -382,7 +382,7 @@ agent-eval-planner validate ./out/suite.jsonl \
     </section>
 
     <!-- Install + footer -->
-    <section id="install" class="band band--mustard install">
+    <section id="install" class="band band--cream install">
       <div class="container">
         <div class="slogan reveal" aria-label="Break it before they do">
           <span>Break it</span><i class="slogan__rule" aria-hidden="true"></i><span class="outline">before they do</span>
